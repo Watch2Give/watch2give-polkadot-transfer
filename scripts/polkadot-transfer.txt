@@ -1,0 +1,31 @@
+// polkadot-transfer.js
+
+const { ApiPromise, WsProvider, Keyring } = require('@polkadot/api');
+
+async function main() {
+  // Connect to the local Substrate node (change WS if needed)
+  const wsProvider = new WsProvider('wss://rpc.polkadot.io'); // or 'ws://127.0.0.1:9944'
+  const api = await ApiPromise.create({ provider: wsProvider });
+
+  // Create an account from the keyring
+  const keyring = new Keyring({ type: 'sr25519' });
+  const sender = keyring.addFromUri('//Alice'); // Dev key or private key
+
+  // ✅ Replace with your recipient address
+  const recipient = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+
+  // Make a transfer of 1 DOT (10^10 Plancks)
+  const transfer = api.tx.balances.transfer(recipient, 1_000_000_000_000);
+
+  // Sign and send the transaction
+  const hash = await transfer.signAndSend(sender, ({ status }) => {
+    if (status.isInBlock) {
+      console.log('📦 Transaction status: inBlock');
+      console.log(`✅ Included at block hash: ${status.asInBlock.toHex()}`);
+    } else if (status.isFinalized) {
+      console.log('🎯 Finalized at block hash', status.asFinalized.toHex());
+    }
+  });
+}
+
+main().catch(console.error).finally(() => process.exit());
