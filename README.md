@@ -1,36 +1,40 @@
 watch2give-polkadot-transfer
 
-This repo contains the Polkadot-native asset transfer logic for the Watch2Give dApp. It supports direct interaction with the Polkadot ecosystem using ink! smart contracts and Polkadot.js, without relying on Remix or EVM-compatible chains.
+Polkadot-Native Asset Transfer for Watch2Give
+
+This repository implements the core asset transfer logic for Watch2Give using ink! smart contracts and @polkadot/api, staying fully native to the Polkadot ecosystem. This effort was led and implemented by @zcybersense, ensuring long-term scalability and compatibility with Substrate-based infrastructure.
 
 Why We Didn't Use Remix
 
-While the hackathon guide suggested using Remix for simplicity, we chose to go with cargo-contract and Substrate-native tooling because:
+Although Remix was recommended in the hackathon starter guide, I made the decision to bypass it in favor of cargo-contract and full Substrate-native tooling, because:
 
-    We’re building this dApp for the long term, not a quick demo.
+    We’re building for production, not just a demo.
 
-    Staying 100% Polkadot-native ensures deeper integration with Asset Hub, XCM, and ink! contracts.
+    Full Polkadot-native setup enables tight integration with Asset Hub, XCM, and ink!.
 
-    Our design aims to scale with on-chain governance, DeFi, and multi-chain airdrops later.
+    Our roadmap includes on-chain governance, DeFi features, and multi-chain airdrops.
 
-    Challenges Faced
+    Error: the target is a binary and can’t have any crate-types set
 
-We encountered several key issues while setting up and compiling the smart contracts with cargo +nightly contract build:
-1. crate-types Error
+Challenges Faced (Resolved by @zcybersense)
 
-    ❗ Error: the target is a binary and can’t have any crate-types set
+    crate-types Build Error
 
-This happened when building contracts like give_token and token_bridge. We had to restructure the crate to use [lib] correctly, not as [bin].
+        "The target is a binary and can’t have any crate-types set"
+
+    This issue occurred while building give_token and token_bridge contracts. The solution involved:
+
+        Refactoring contract crates to use [lib] instead of [bin]
+
+        Removing nested workspaces and flattening the structure
 
 ![image](https://github.com/user-attachments/assets/150a8ac9-b104-4ce8-a067-367df6a6a169)
 
-Success Achieved
+Success Milestones
 
-Once we removed nested repos and properly handled addresses, we got:
+    ✔️ Contracts compiled: .wasm, .json, and .contract artifacts generated
 
-    ✅ Smart contract build complete
-    (Screenshot showing .contract, .json, .wasm output files)
-
-    ✅ Polkadot transfer script working using @polkadot/api
+    ✔️ Working transfer script using @polkadot/api
 
 
   ![image](https://github.com/user-attachments/assets/a9f0539f-2929-435f-b9da-532d4bf0db4c)
@@ -41,10 +45,10 @@ Once we removed nested repos and properly handled addresses, we got:
   watch2give-polkadot-transfer/
 ├── contracts/                 # ink! smart contracts
 │   └── give_token/           # PSP22 GIVE token
-├── scripts/                  # JavaScript + @polkadot/api
+├── scripts/                  # JS + Polkadot.js API
 │   ├── polkadot-transfer.js
 │   └── polkadot-transfer.txt
-├── chain-nodes/              # substrate-contracts-node
+├── chain-nodes/              # Substrate local test node
 └── README.md                 # ← You are here
 
 
@@ -56,9 +60,9 @@ Tools Used
 
     substrate-contracts-node
 
-    GitHub PATs for secure push
+    GitHub PATs for secure pushing
 
 
 Summary
 
-We chose the longer but production-ready path: cargo + ink! + Substrate + Polkadot.js. The repo now supports asset transfer, contract building, and is ready for integration with Asset Hub and parachain XCM workflows.
+This repo was set up by @zcybersense to future-proof Watch2Give with a real-world, scalable smart contract architecture. By going beyond Remix and building with cargo, ink!, and Substrate-native tooling, the repo is now fully equipped to handle asset transfers and pave the way for Asset Hub & XCM integrations.
